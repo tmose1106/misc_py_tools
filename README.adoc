@@ -1,0 +1,13 @@
+= misc_py_tools
+
+Miscellanous tools written in Python for a series of tasks
+
+== Background
+
+On June 9th, 2016, I deleted many useful tools that I had been using for some
+time. This repo is dedicated to those scripts which were so helpful to me. I
+am in the process of recreating them. They will be available on GitHub so that
+I will never lose them again, and so that anyone can take advantage of them.
+
+== License
+These scripts are all available under the MIT Open Source license.
