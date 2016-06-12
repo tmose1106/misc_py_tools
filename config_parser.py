@@ -1,8 +1,11 @@
-#! /usr/bin/python3
+# Standard
+import sys
+# Dependencies
+import xdg.BaseDirectory as xdg
 
 class Config_File_Parse:
 
-    def __init__(self, in_file):
+    def __init__(self, project_name, file_name):
         
         """ This function creates a diction of configuration keys and values
         by reading a specified text file passed as an argument. It excludes
@@ -11,21 +14,30 @@ class Config_File_Parse:
         can only be one word, while the value can be a full string.
         """
 
+        self.in_file = "%s/%s" % (xdg.load_first_config(project_name), file_name)
+
         self.config_dict = {}
+        try:
+            with open(self.in_file) as a_file:
+                for line in a_file:
 
-        with open(in_file) as a_file:
-            for line in a_file:
+                    key = ()
+                    value = ()
 
-                key = ()
-                value = ()
+                    if line[0] != '#' and line != '\n':
+                        key, value = line.split(maxsplit=1)
+                    else:
+                        continue
+                    
+                    self.config_dict[key[:-1]] = str(value.rstrip('\n'))
+        
+        except FileNotFoundError:
+            print("Configuration file or directory could not be found")
+            sys.exit(1)
 
-                if line[0] != '#' and line != '\n':
-                    key, value = line.split(maxsplit=1)
-                else:
-                    continue
-                
-                self.config_dict[key[:-1]] = str(value.rstrip('\n'))
+    def get_info(self):
 
+        return self.config_dict        
 
     def just_print(self):
         

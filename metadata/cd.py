@@ -1,8 +1,8 @@
 
 # Standard
-import json
 import os
 import subprocess
+import sys
 # Dependencies
 import discid
 import musicbrainzngs
@@ -26,7 +26,10 @@ def musicbrainz_info():
     except musicbrainzngs.ResponseError:
         print("Disc was not found, check if available on musicbrainz.org")
         print(disc_submission)
-
+        sys.exit(0)
+    except musicbrainzngs.musicbrainz.NetworkError:
+        print("You do not seem to be connected to the internet")
+        sys.exit(0)
     else:
 
         album_info_dict = {
@@ -34,8 +37,10 @@ def musicbrainz_info():
             'album_artist': result['disc']['release-list'][0]['artist-credit'][0]['artist']['name'],
             'artist': result['disc']['release-list'][0]['artist-credit'][0]['artist']['name'],
             'date': result['disc']['release-list'][0]['date'],
+            'disc': '1',
             'disc_id': result['disc']['id'],
             'label': result['disc']['release-list'][0]['label-info-list'][0]['label']['name'],
+            'total_discs': '1',
             'total_tracks': result['disc']['offset-count'],
             'tracks': {}
         }
@@ -47,8 +52,5 @@ def musicbrainz_info():
 
             album_info_dict['tracks'][track_number] = title
 
-        #print(result)   
-        #print(json.dumps(result, indent=4))
-        #print(album_info_dict)
-
         return album_info_dict
+
