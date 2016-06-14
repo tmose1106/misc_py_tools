@@ -1,8 +1,13 @@
-
 # Standard
 import subprocess
 
-def special_characters(a_string, replace_character):
+def remove_spaces(a_string, replace_character):
+
+    modified_string = a_string.replace(' ', '')
+
+    return modified_string
+
+def remove_special(a_string, replace_character):
 
     """ This function removes special characters that take away from the
     reading experience or which are not permitted to be used within a file
@@ -10,7 +15,7 @@ def special_characters(a_string, replace_character):
     """
 
     mod_string = a_string
-    removal_list = ['<>:\'"/\\|?!* ']
+    removal_list = ['<>:\'"/\\|?!*']
 
     for real_list in removal_list:
         for character in real_list:
@@ -18,6 +23,13 @@ def special_characters(a_string, replace_character):
                 mod_string = mod_string.replace(str(character), '-')
 
     return mod_string
+
+def name_clean(a_string):
+
+    spaceless_string = remove_spaces(a_string)
+    clean_string = remove_special(spaceless_string, '-')
+
+    return clean_string
 
 
 class Album_Art():

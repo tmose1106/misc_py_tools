@@ -9,5 +9,12 @@ time. This repo is dedicated to those scripts which were so helpful to me. I
 am in the process of recreating them. They will be available on GitHub so that
 I will never lose them again, and so that anyone can take advantage of them.
 
+== Contents
+
+Currently, the only somewhat completed script is the CD Ripper which can be
+found at 'Audio/ripper.py'. Sooner or later this will receive its own repo,
+but for now it will remain miscellaneous.
+
 == License
-These scripts are all available under the MIT Open Source license.
+These scripts are all available under the MIT Open Source license. Read
+'LICENSE' for more information.

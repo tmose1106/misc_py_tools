@@ -14,7 +14,6 @@ class Config_File_Parse:
         can only be one word, while the value can be a full string.
         """
 
-        self.in_file = "%s/%s" % (xdg.load_first_config(project_name), file_name)
 
         self.config_dict = {}
         try:
