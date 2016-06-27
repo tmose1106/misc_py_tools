@@ -26,9 +26,10 @@ def musicbrainz_info():
                                                        includes=['artists',
                                                                  'labels',
                                                                  'recordings'])
+        #print(result)
 
     except musicbrainzngs.ResponseError:
-        print("Disc was not found, check if available on musicbrainz.org")
+        print("Disc was not found in database, check if available on musicbrainz.org")
         print(disc_submission)
         sys.exit(0)
     except musicbrainzngs.musicbrainz.NetworkError:

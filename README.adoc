@@ -15,6 +15,20 @@ Currently, the only somewhat completed script is the CD Ripper which can be
 found at 'Audio/ripper.py'. Sooner or later this will receive its own repo,
 but for now it will remain miscellaneous.
 
+=== Audio
+
+This folder contains an assortment of audio file related scripts, including a 
+CD ripper which uses CDParanoia and FFmpeg to create audio files specified in
+a build script. It is working quite well as of 06/27/2016.
+
+This folder also has a small mutagen wrapper for printing metadata from files,
+but it is not really complete yet.
+
+=== General
+
+Literally just a bunch of general test scripts and other junk.
+
 == License
+
 These scripts are all available under the MIT Open Source license. Read
 'LICENSE' for more information.

@@ -39,8 +39,11 @@ def write_ripper_config():
         'output_dir': '~/Music/MP3_320'
     }
 
+    config_out = {
+        'album_art_dir': '',
+        'encoders': encoders}
+
     config_path = "%s/%s" % (xdg.load_first_config('trip'), 'encoder.cfg')
 
-    write_config(encoders, config_path) 
-
+    write_config(config_out, config_path) 
 
