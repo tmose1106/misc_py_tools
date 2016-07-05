@@ -31,7 +31,6 @@ def name_clean(a_string):
 
     return clean_string
 
-
 class Album_Art():
 
     def __init__(self, metadata_dictionary, file_prefix):

@@ -6,9 +6,15 @@ import sys
 import json_config
 import metadata.art
 import metadata.cd
+import metadata.dump
 import metadata.genre
 import metadata.paste
-import metadata.print
+
+""" This is my ripping script. It reads a JSON configuration file, then rips
+the CD and spits out the songs in the audio formats specified in the
+configuration file. Finally, it adds metadata from Musicbrainz and adds album
+art from a local database.
+"""
 
 # Get information from the configuration file
 # Configuration file should have been created during installation
@@ -23,7 +29,7 @@ except FileNotFoundError:
 
 # Get metadata online from the disc and print some info
 metadata_dict = metadata.cd.musicbrainz_info()
-metadata.print.print_album_information(metadata_dict)
+metadata.dump.print_album_information(metadata_dict)
 
 # Add a genre to the metadata list
 genre_dictionary = metadata.genre.genre_format()
@@ -69,7 +75,7 @@ for index in range(metadata_dict['total_tracks']):
     print("%s-%s" % (pretty_number, metadata_dict['tracks'][raw_number]))
     # Define the absolute output path for the output file
     ffmpeg_commands = ['ffmpeg',
-                       #'-loglevel', 'fatal', '-stats',
+                       '-loglevel', 'fatal', '-stats',
                        '-y', '-i', 'pipe:0']
 
     for encoder in encoders:
@@ -103,7 +109,7 @@ for index in range(metadata_dict['total_tracks']):
 
     #  Meanwhile, convert the rip to different formats through a UNIX pipe
     # using ffmpeg
-    print(ffmpeg_commands)
+    #print(ffmpeg_commands)
     ffmpeg_run = subprocess.Popen(ffmpeg_commands, stdin=cdparanoia_call.stdout)
     ffmpeg_run.wait()
 

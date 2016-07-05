@@ -42,7 +42,7 @@ def name_clean(a_string):
     """ Just run the two functions above to 'clean' the string for album
     art purposes.
     """
-    spaceless_string = remove_space(a_string)
+    spaceless_string = remove_space(a_string, '')
     clean_string = remove_special(spaceless_string, '-')
 
     return clean_string
@@ -91,10 +91,10 @@ class Apply_Art():
     def __init__(self, art_file):
 
         if os.path.isfile(art_file):
-            print("Art file loading!")
+            #print("Art file loading!")
             self.art_data = open(art_file, 'rb').read()
         else:
-            print("No art file found. Woops.")
+            print("No art file found")
 
     def flac_art(self, flac_file):
 

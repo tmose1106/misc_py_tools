@@ -1,5 +1,6 @@
 
 # Standard
+import json
 import os
 import subprocess
 import sys
@@ -27,6 +28,21 @@ def musicbrainz_info():
                                                                  'labels',
                                                                  'recordings'])
         #print(result)
+        number_of_discs = result['disc']['release-list'][0]['medium-count']
+        disc_number_list = list(range(1, (number_of_discs + 1)))
+        disc_string = ', '.join(map(str, disc_number_list))
+        if number_of_discs > 1:
+            print('This disc is part of a set. You can choose from %s' % disc_string)
+
+            choice = input('Please enter the proper disc number: ')
+            if not int(choice) in disc_number_list:
+                print("Invalid disc number")
+                sys.exit(0)
+            pretty_disc_number = choice
+            raw_disc_number = int(pretty_disc_number) - 1
+        else:
+            pretty_disc_number = '1'
+            raw_disc_number = 0
 
     except musicbrainzngs.ResponseError:
         print("Disc was not found in database, check if available on musicbrainz.org")
@@ -42,15 +58,15 @@ def musicbrainz_info():
             'album_artist': result['disc']['release-list'][0]['artist-credit'][0]['artist']['name'],
             'artist': result['disc']['release-list'][0]['artist-credit'][0]['artist']['name'],
             'date': result['disc']['release-list'][0]['date'],
-            'disc': '1',
+            'disc': pretty_disc_number,
             'disc_id': result['disc']['id'],
             'label': result['disc']['release-list'][0]['label-info-list'][0]['label']['name'],
-            'total_discs': '1',
-            'total_tracks': result['disc']['offset-count'],
+            'total_discs': str(number_of_discs),
+            'total_tracks': result['disc']['release-list'][0]['medium-list'][raw_disc_number]['track-count'],
             'tracks': {}
         }
-        
-        for track in result['disc']['release-list'][0]['medium-list'][0]['track-list']:
+
+        for track in result['disc']['release-list'][0]['medium-list'][raw_disc_number]['track-list']:
 
             title = track['recording']['title']
             track_number = track['position']
@@ -59,3 +75,8 @@ def musicbrainz_info():
 
         return album_info_dict
 
+if __name__ == '__main__':
+    disc_info = musicbrainz_info()
+    json_info = json.dumps(disc_info, indent=2)
+    print(json_info)
+    #pass

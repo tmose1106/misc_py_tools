@@ -47,7 +47,7 @@ class Apply_Metadata():
             'GENRE': info_dict['genre'],
             'TITLE': info_dict['tracks'][track_number],
             'TRACKNUMBER': track_number.zfill(2),
-            'TOTALTRACKS': str(info_dict['total_tracks']),
+            'TOTALTRACKS': str(info_dict['total_tracks']).zfill(2),
             'DISCNUMBER': info_dict['disc'],
             'TOTALDISCS': info_dict['total_discs']}
 
@@ -74,15 +74,15 @@ class Apply_Metadata():
 
         info_dict = self.info_dict
 
-        id3_discs = ()
         try:
             id3_discs = "%s/%s" % (info_dict['disc'], info_dict['total_discs'])
         except KeyError:
             id3_discs = '1/1'
 
-        id3_number = ()
         try:
-            id3_track = "%s/%s" % (track_number, info_dict['total_tracks'])
+
+            id3_track = "%s/%s" % (track_number.zfill(2),
+                                   str(info_dict['total_tracks']).zfill(2))
         except KeyError:
             id3_track = track_number
 
@@ -98,7 +98,7 @@ class Apply_Metadata():
             'TPOS': id3_discs}
 
         for tag in transfer_dictionary:
-            exec_string = "song.add(mid3.%s(3, text='%s'))" % (tag, transfer_dictionary[tag])
+            exec_string = 'song.add(mid3.%s(3, text="%s"))' % (tag, transfer_dictionary[tag])
             exec(exec_string)
 
         song.save()
