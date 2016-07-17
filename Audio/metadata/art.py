@@ -1,6 +1,7 @@
 # Standard
 import base64
 import os
+import shutil
 import subprocess
 import sys
 # Dependencies
@@ -92,6 +93,7 @@ class Apply_Art():
 
         if os.path.isfile(art_file):
             #print("Art file loading!")
+            self.art_file = art_file
             self.art_data = open(art_file, 'rb').read()
         else:
             print("No art file found")
@@ -126,5 +128,12 @@ class Apply_Art():
         pic.type = 3
         pic.mime = 'image/jpeg'
 
-        song['METADATA_BLOCK_PICTURE'] = str(base64.b64encode(pic.write()),'utf-8')
+        song['METADATA_BLOCK_PICTURE'] = str(base64.b64encode(pic.write()),
+                                             'utf-8')
         song.save()
+
+    def folder_art(self, output_dir):
+
+        output_file = "%s/folder.jpg" % output_dir
+
+        shutil.copy2(self.art_file, output_file)

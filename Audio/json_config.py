@@ -1,12 +1,12 @@
 # Standard
 import json
 # Dependencies
-import xdg.BaseDirectory as xdg 
+import xdg.BaseDirectory as xdg
 
 def read_config(input_path):
     with open(input_path, 'r') as in_file:
         dictionary = json.load(in_file)
-    
+
     return dictionary
 
 def write_config(output_dict, output_path):
@@ -19,31 +19,39 @@ def write_config(output_dict, output_path):
     print("Made %s" % output_path)
 
 def read_ripper_config():
-    
-    config_path = "%s/%s" % (xdg.load_first_config('trip'), 'encoder.cfg')
-    
-    encoder_conf = read_config(config_path)
 
-    return encoder_conf
+    config_path = "%s/%s" % (xdg.load_first_config('trip'), 'ripper.cfg')
+    config_dict = read_config(config_path)
+
+    for x in config_dict:
+        print(x)
+
+    return config_dict
 
 def write_ripper_config():
- 
-    encoders = {}
-    encoders[0] = {
+
+    album_art_dict = {
+        'album_art_dir': "~/Pictures/album_art",
+        'embeded_art': True,
+        'folder_art': False
+    }
+
+    encoders_dict = {}
+    encoders_dict[0] = {
         'codec': 'flac',
         'output_dir': '~/Music/FLAC'
     }
-    encoders[1] = {
+    encoders_dict[1] = {
         'codec': 'mp3',
         'bitrate': 320,
         'output_dir': '~/Music/MP3_320'
     }
 
     config_out = {
-        'album_art_dir': '',
-        'encoders': encoders}
+        'album_art': album_art_dict,
+        'encoders': encoders_dict,
+        'output_prefix': "~/Music"}
 
-    config_path = "%s/%s" % (xdg.load_first_config('trip'), 'encoder.cfg')
+    config_path = "%s/%s" % (xdg.load_first_config('trip'), 'ripper.cfg')
 
-    write_config(config_out, config_path) 
-
+    write_config(config_out, config_path)

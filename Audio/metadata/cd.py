@@ -1,4 +1,3 @@
-
 # Standard
 import json
 import os
@@ -27,8 +26,8 @@ def musicbrainz_info():
                                                        includes=['artists',
                                                                  'labels',
                                                                  'recordings'])
-        #print(result)
-        number_of_discs = result['disc']['release-list'][0]['medium-count']
+        release_list = result['disc']['release-list'][0]
+        number_of_discs = release_list['medium-count']
         disc_number_list = list(range(1, (number_of_discs + 1)))
         disc_string = ', '.join(map(str, disc_number_list))
         if number_of_discs > 1:
@@ -52,21 +51,23 @@ def musicbrainz_info():
         print("You do not seem to be connected to the internet")
         sys.exit(0)
     else:
-
         album_info_dict = {
-            'album': result['disc']['release-list'][0]['title'],
-            'album_artist': result['disc']['release-list'][0]['artist-credit'][0]['artist']['name'],
-            'artist': result['disc']['release-list'][0]['artist-credit'][0]['artist']['name'],
-            'date': result['disc']['release-list'][0]['date'],
+            'album': release_list['title'],
+            'album_artist': release_list['artist-credit'][0]['artist']['name'],
+            'artist': release_list['artist-credit'][0]['artist']['name'],
+            'date': release_list['date'],
             'disc': pretty_disc_number,
             'disc_id': result['disc']['id'],
-            'label': result['disc']['release-list'][0]['label-info-list'][0]['label']['name'],
             'total_discs': str(number_of_discs),
-            'total_tracks': result['disc']['release-list'][0]['medium-list'][raw_disc_number]['track-count'],
+            'total_tracks': release_list['medium-list'][raw_disc_number]['track-count'],
             'tracks': {}
         }
+        try:
+            album_info_dict['label'] = release_list['label-info-list'][0]['label']['name']
+        except IndexError:
+            album_info_dict['label'] = ''
 
-        for track in result['disc']['release-list'][0]['medium-list'][raw_disc_number]['track-list']:
+        for track in release_list['medium-list'][raw_disc_number]['track-list']:
 
             title = track['recording']['title']
             track_number = track['position']
@@ -79,4 +80,3 @@ if __name__ == '__main__':
     disc_info = musicbrainz_info()
     json_info = json.dumps(disc_info, indent=2)
     print(json_info)
-    #pass

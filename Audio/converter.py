@@ -5,8 +5,6 @@ import sys
 # Scripts
 import json_config
 import metadata.art
-import metadata.cd
-import metadata.dump
 import metadata.genre
 import metadata.paste
 
@@ -87,11 +85,7 @@ for index in range(metadata_dict['total_tracks']):
         codec = encoders[encoder]['codec']
         output_path = "%s/%s.%s" % (output_dict[encoder], clean_title, codec)
 
-        if codec == 'flac':
-            for x in ['-acodec', 'flac', output_path]:
-                ffmpeg_commands.append(x)
-
-        elif codec == 'ogg':
+        if codec == 'ogg':
             bitrate = "%sk" % encoders[encoder]['bitrate']
 
             for x in ['-acodec', 'libvorbis', '-b:a', bitrate, output_path]:
@@ -105,12 +99,7 @@ for index in range(metadata_dict['total_tracks']):
         else:
             print("%s is an unknown audio codec" % codec)
 
-    # Beginning the actually ripping progress
-    cdparanoia_call = subprocess.Popen(['cdparanoia', '-q', '-B', raw_number,
-                                        '-'], stdout=subprocess.PIPE)
-
-    #  Meanwhile, convert the rip to different formats through a UNIX pipe
-    # using ffmpeg
+    #  Convert the files to different formats using ffmpeg
     ffmpeg_run = subprocess.Popen(ffmpeg_commands, stdin=cdparanoia_call.stdout)
     ffmpeg_run.wait()
 

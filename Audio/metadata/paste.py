@@ -65,14 +65,12 @@ class Apply_Metadata():
         """
 
         title, extension = os.path.splitext(a_file)
+        info_dict = self.info_dict
 
         if extension == '.mp3':
             song = mid3.ID3(a_file)
         else:
             print("%s format not permitted by id3_paste" % extension)
-
-
-        info_dict = self.info_dict
 
         try:
             id3_discs = "%s/%s" % (info_dict['disc'], info_dict['total_discs'])
@@ -80,7 +78,6 @@ class Apply_Metadata():
             id3_discs = '1/1'
 
         try:
-
             id3_track = "%s/%s" % (track_number.zfill(2),
                                    str(info_dict['total_tracks']).zfill(2))
         except KeyError:
@@ -90,7 +87,7 @@ class Apply_Metadata():
             'TALB': info_dict['album'],
             'TPE1': info_dict['album_artist'],
             'TPE2': info_dict['artist'],
-            'TDRL': info_dict['date'],
+            'TDRL': info_dict['date'][:4],
             'TPUB': info_dict['label'],
             'TCON': info_dict['genre'],
             'TIT2': info_dict['tracks'][track_number],
