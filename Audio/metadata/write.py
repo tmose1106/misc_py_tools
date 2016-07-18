@@ -49,7 +49,8 @@ class Apply_Metadata():
             'TRACKNUMBER': track_number.zfill(2),
             'TOTALTRACKS': str(info_dict['total_tracks']).zfill(2),
             'DISCNUMBER': info_dict['disc'],
-            'TOTALDISCS': info_dict['total_discs']}
+            'TOTALDISCS': info_dict['total_discs']
+        }
 
         for tag in transfer_dictionary:
             song[tag] = transfer_dictionary[tag]

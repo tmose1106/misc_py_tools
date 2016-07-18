@@ -87,12 +87,13 @@ def art_path_check(a_path, a_file):
             print("%s is an invalid response" % prompt)
             continue
 
+    return art_path
+
 class Apply_Art():
 
     def __init__(self, art_file):
 
         if os.path.isfile(art_file):
-            #print("Art file loading!")
             self.art_file = art_file
             self.art_data = open(art_file, 'rb').read()
         else:

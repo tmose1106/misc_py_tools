@@ -8,7 +8,7 @@ import metadata.art
 import metadata.cd
 import metadata.dump
 import metadata.genre
-import metadata.paste
+import metadata.write
 
 """ This is my ripping script. It reads a JSON configuration file and
 finds metadata on Musicbrainz.org using the CD's disc ID. Then it rips
@@ -18,7 +18,7 @@ finally adds album art from a local database.
 """
 
 # Get information from the configuration file
-# Configuration file should have been created during installation
+# Configuration file should have been created during first run
 try:
     json_config = json_config.read_ripper_config()
     encoders = json_config['encoders']
@@ -58,8 +58,7 @@ for encoder in encoders:
 # Get album art file name and make sure the file exists in the art directory
 album_art_dir = os.path.expanduser(art_conf['album_art_dir'])
 album_art_file = metadata.art.find_path(metadata_dict)
-album_art_path = "%s/%s" % (album_art_dir, album_art_file)
-metadata.art.art_path_check(album_art_dir, album_art_file)
+album_art_path = metadata.art.art_path_check(album_art_dir, album_art_file)
 
 # clear the screen for formatting purposes
 subprocess.run(['clear'])
@@ -72,14 +71,12 @@ for index in range(metadata_dict['total_tracks']):
     pretty_number = raw_number.zfill(2)
 
     # Define the file title of the output file
-    raw_title = "%s-%s" % (pretty_number,
-                              metadata_dict['tracks'][raw_number])
+    raw_title = "%s-%s" % (pretty_number, metadata_dict['tracks'][raw_number])
     clean_title = metadata.art.remove_special(raw_title, '-')
 
     print("%s-%s" % (pretty_number, metadata_dict['tracks'][raw_number]))
     # Define the absolute output path for the output file
-    ffmpeg_commands = ['ffmpeg',
-                       '-loglevel', 'fatal', '-stats',
+    ffmpeg_commands = ['ffmpeg', '-loglevel', 'fatal', '-stats',
                        '-y', '-i', 'pipe:0']
 
     for encoder in encoders:
@@ -115,7 +112,7 @@ for index in range(metadata_dict['total_tracks']):
     ffmpeg_run.wait()
 
     # Load the metadata dictionary from the CD and apply it to the files
-    metadata_paste = metadata.paste.Apply_Metadata(metadata_dict, raw_number)
+    metadata_write = metadata.write.Apply_Metadata(metadata_dict, raw_number)
 
     for encoder in encoders:
 
@@ -123,15 +120,15 @@ for index in range(metadata_dict['total_tracks']):
         output_file = "%s/%s.%s" % (output_dict[encoder], clean_title, codec)
 
         if codec == 'flac':
-            metadata_paste.vorbis_tag(output_file, raw_number)
+            metadata_write.vorbis_tag(output_file, raw_number)
         elif codec == 'mp3':
-            metadata_paste.id3_tag(output_file, raw_number)
+            metadata_write.id3_tag(output_file, raw_number)
         elif codec == 'ogg':
-            metadata_paste.vorbis_tag(output_file, raw_number)
+            metadata_write.vorbis_tag(output_file, raw_number)
         else:
             print("%s is an unknown audio codec" % codec)
 
-        if album_art_file != '':
+        if album_art_path != '':
             art_paste = metadata.art.Apply_Art(album_art_path)
             # Embed the album art in the audio file in enabled in config
             if art_conf['embeded_art']:
