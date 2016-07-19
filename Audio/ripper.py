@@ -31,7 +31,7 @@ except FileNotFoundError:
     sys.exit(0)
 
 # Get metadata online from Musicbrainz using the Disc ID and print some info
-metadata_dict = metadata.cd.musicbrainz_info()
+metadata_dict, track_dict = metadata.cd.musicbrainz_info()
 metadata.dump.print_album_information(metadata_dict)
 
 # Add a genre to the metadata dictionary
@@ -71,10 +71,10 @@ for index in range(metadata_dict['total_tracks']):
     pretty_number = raw_number.zfill(2)
 
     # Define the file title of the output file
-    raw_title = "%s-%s" % (pretty_number, metadata_dict['tracks'][raw_number])
+    raw_title = "%s-%s" % (pretty_number, track_dict[raw_number])
     clean_title = metadata.art.remove_special(raw_title, '-')
 
-    print("%s-%s" % (pretty_number, metadata_dict['tracks'][raw_number]))
+    print("%s-%s" % (pretty_number, track_dict[raw_number]))
     # Define the absolute output path for the output file
     ffmpeg_commands = ['ffmpeg', '-loglevel', 'fatal', '-stats',
                        '-y', '-i', 'pipe:0']
@@ -112,19 +112,19 @@ for index in range(metadata_dict['total_tracks']):
     ffmpeg_run.wait()
 
     # Load the metadata dictionary from the CD and apply it to the files
-    metadata_write = metadata.write.Apply_Metadata(metadata_dict, raw_number)
-
+    metadata_write = metadata.write.Apply_Metadata(metadata_dict, raw_number,
+                                                   track_dict[raw_number])
     for encoder in encoders:
 
         codec = encoders[encoder]['codec']
         output_file = "%s/%s.%s" % (output_dict[encoder], clean_title, codec)
 
         if codec == 'flac':
-            metadata_write.vorbis_tag(output_file, raw_number)
+            metadata_write.vorbis_tag(output_file)
         elif codec == 'mp3':
-            metadata_write.id3_tag(output_file, raw_number)
+            metadata_write.id3_tag(output_file)
         elif codec == 'ogg':
-            metadata_write.vorbis_tag(output_file, raw_number)
+            metadata_write.vorbis_tag(output_file)
         else:
             print("%s is an unknown audio codec" % codec)
 

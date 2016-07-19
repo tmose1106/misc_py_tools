@@ -12,7 +12,7 @@ class Apply_Metadata():
     into a new file or set of files.
     """
 
-    def __init__(self, metadata_dictionary, number):
+    def __init__(self, metadata_dictionary, track_number, track_title):
 
         """ This function accepts a metadata dictionary, then splits a file
         through its name to find a format, and finally creates a mutagen
@@ -20,8 +20,10 @@ class Apply_Metadata():
         """
 
         self.info_dict = metadata_dictionary
+        self.track_number = track_number
+        self.track_title = track_title
 
-    def vorbis_tag(self, a_file, track_number):
+    def vorbis_tag(self, a_file):
 
         """ This function takes a metadata dictionary and uses Mutagen to
         apply it to a FLAC or OGG Vorbis file.
@@ -36,6 +38,8 @@ class Apply_Metadata():
         else:
             print("%s format not permitted by flac_paste" % extension)
 
+        # Remove any pre-existing tags
+        song.delete()
 
         info_dict = self.info_dict
         transfer_dictionary = {
@@ -45,8 +49,8 @@ class Apply_Metadata():
             'DATE': info_dict['date'][:4],
             'LABEL': info_dict['label'],
             'GENRE': info_dict['genre'],
-            'TITLE': info_dict['tracks'][track_number],
-            'TRACKNUMBER': track_number.zfill(2),
+            'TITLE': self.track_title,
+            'TRACKNUMBER': self.track_number.zfill(2),
             'TOTALTRACKS': str(info_dict['total_tracks']).zfill(2),
             'DISCNUMBER': info_dict['disc'],
             'TOTALDISCS': info_dict['total_discs']
@@ -57,7 +61,7 @@ class Apply_Metadata():
 
         song.save()
 
-    def id3_tag(self, a_file, track_number):
+    def id3_tag(self, a_file):
 
         """ Similar to the function above, this function adds metadata to a
         an ID3 tag within an MP3 file. Prior to application, it sorts out a
@@ -73,16 +77,19 @@ class Apply_Metadata():
         else:
             print("%s format not permitted by id3_paste" % extension)
 
+        # Remove any pre-existing tags
+        song.delete()
+
         try:
             id3_discs = "%s/%s" % (info_dict['disc'], info_dict['total_discs'])
         except KeyError:
             id3_discs = '1/1'
 
         try:
-            id3_track = "%s/%s" % (track_number.zfill(2),
+            id3_track = "%s/%s" % (self.track_number.zfill(2),
                                    str(info_dict['total_tracks']).zfill(2))
         except KeyError:
-            id3_track = track_number
+            id3_track = self.track_number
 
         transfer_dictionary = {
             'TALB': info_dict['album'],
@@ -91,7 +98,7 @@ class Apply_Metadata():
             'TDRL': info_dict['date'][:4],
             'TPUB': info_dict['label'],
             'TCON': info_dict['genre'],
-            'TIT2': info_dict['tracks'][track_number],
+            'TIT2': self.track_title,
             'TRCK': id3_track,
             'TPOS': id3_discs}
 

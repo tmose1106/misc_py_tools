@@ -51,6 +51,7 @@ def musicbrainz_info():
         print("You do not seem to be connected to the internet")
         sys.exit(0)
     else:
+        # Define metadata for the entire album
         album_info_dict = {
             'album': release_list['title'],
             'album_artist': release_list['artist-credit'][0]['artist']['name'],
@@ -60,21 +61,22 @@ def musicbrainz_info():
             'disc_id': result['disc']['id'],
             'total_discs': str(number_of_discs),
             'total_tracks': release_list['medium-list'][raw_disc_number]['track-count'],
-            'tracks': {}
         }
         try:
             album_info_dict['label'] = release_list['label-info-list'][0]['label']['name']
         except IndexError:
             album_info_dict['label'] = ''
 
+        track_dict = {}
+
         for track in release_list['medium-list'][raw_disc_number]['track-list']:
 
             title = track['recording']['title']
             track_number = track['position']
 
-            album_info_dict['tracks'][track_number] = title
+            track_dict[track_number] = title
 
-        return album_info_dict
+        return album_info_dict, track_dict
 
 if __name__ == '__main__':
     disc_info = musicbrainz_info()
